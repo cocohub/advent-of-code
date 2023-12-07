@@ -1,4 +1,3 @@
-// const input = (await Bun.file('src/day7/input-example.txt').text()).split('\n');
 const input = (await Bun.file('src/day7/input.txt').text()).split('\n');
 
 type CardLabel =
@@ -125,8 +124,6 @@ hands.sort((a, b) => {
   }
 });
 
-// console.log(hands);
-
 let sum = 0;
 
 hands.forEach((hand, i) => {
@@ -135,32 +132,3 @@ hands.forEach((hand, i) => {
 });
 
 console.log(sum);
-
-/* if (sortedOccurrences[0] === 5) {
-  // J J J J J
-  return upgradeResult('Five of a kind', cards);
-} else if (sortedOccurrences[0] === 4) {
-  // J J J J 5 - > 5 5 5 5 5 four of a kind became five of a kind
-  // J 5 5 5 5 - > 5 5 5 5 5 four of a kind became five of a kind
-  return upgradeResult('Four of a kind', cards);
-} else if (sortedOccurrences[0] === 3 && sortedOccurrences[1] === 2) {
-  // J J J 5 5 - > 5 5 5 3 5 full house became five of a kind
-  // J J 5 5 5 - > 5 5 5 5 5 full house became five of a kind
-  return upgradeResult('Full house', cards);
-} else if (sortedOccurrences[0] === 3) {
-  // J 2 3 3 3 - > 3 2 3 3 3 three of a kind became four of a kind
-  // J J 3 3 3 - > 3 3 3 3 3 three of a kind became five of a kind
-  // J J J 3 5 - > 5 5 5 3 5 three of a kind became four of a kind
-  return upgradeResult('Three of a kind', cards);
-} else if (uniqueCount === 3) {
-  // J 3 3 5 5 - > 5 3 3 5 5 two pair became full house ****************
-  // J J 3 5 5 - > 5 5 3 5 5 two pair became four of a kind
-  return upgradeResult('Two pair', cards);
-} else if (uniqueCount === 4) {
-  // 2 3 J 5 5 - > 2 3 5 5 5 one pair became three of a kind
-  // 2 3 5 J J - > 2 3 5 5 5 one pair became three of a kind
-  return upgradeResult('One pair', cards);
-} else {
-  // 2 3 4 5 J - > 2 3 4 5 5 high card became one pair
-  return upgradeResult('High card', cards);
-} */

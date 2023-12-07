@@ -1,4 +1,3 @@
-// const input = (await Bun.file('src/day7/input-example.txt').text()).split('\n');
 const input = (await Bun.file('src/day7/input.txt').text()).split('\n');
 
 type CardLabel =
@@ -52,34 +51,63 @@ function getHighestCard(cards: CardLabel[]) {
   let highestValue = 0;
 
   for (const card of cards) {
-    const cardValue = cardValues[card];
+    if (card !== 'J') {
+      const cardValue = cardValues[card];
 
-    if (cardValue > highestValue) {
-      highestValue = cardValue;
-      highestCard = card;
+      if (cardValue > highestValue) {
+        highestValue = cardValue;
+        highestCard = card;
+      }
     }
   }
 
   return highestCard!;
 }
 
-const findHighestCombo = (cards: CardLabel[]) => {
-  const wildCards = cards.filter((card) => card === 'J');
+function getMostOccurringCard(cards: CardLabel[]) {
+  const { occurrences } = getOccurences(cards);
 
-  if (wildCards.length) {
-    const highestCard = getHighestCard(cards);
+  // Sort object by value and return as [key, value] array
+  const sortedOccurrences = Object.entries(occurrences).sort(
+    (a, b) => (b[1] || 0) - (a[1] || 0)
+  );
 
-    const newCards = cards.map((card) => {
-      if (card === 'J') {
-        return highestCard;
-      }
+  return sortedOccurrences as [CardLabel, number][];
+}
+
+const replaceCards = (cards: CardLabel[], card: CardLabel) => {
+  return cards.map((c) => {
+    if (c === 'J') {
       return card;
-    });
+    }
+    return c;
+  });
+};
 
+const findHighestCombo = (cards: CardLabel[]) => {
+  const wildCards = cards.filter((c) => c === 'J');
+
+  if (!wildCards.length) {
+    return cards;
+  }
+
+  const highestCard = getHighestCard(cards);
+  const mostOccurring = getMostOccurringCard(cards).filter((card) => {
+    return card[0] !== 'J';
+  });
+
+  if (
+    mostOccurring?.[0]?.[1] &&
+    mostOccurring?.[1]?.[1] &&
+    mostOccurring[0][1] === mostOccurring[1][1]
+  ) {
+    const newCards = replaceCards(cards, highestCard);
     return newCards;
   }
 
-  return cards;
+  const mostOccurringCard = mostOccurring?.[0]?.[0];
+  const newCards = replaceCards(cards, mostOccurringCard);
+  return newCards ?? cards;
 };
 
 const returnHandValueResult = (
@@ -93,12 +121,10 @@ const returnHandValueResult = (
   };
 };
 
-function assignHandValue({ cards }: Hand) {
+const getOccurences = (cards: CardLabel[]) => {
   const occurrences: { [key in CardLabel]?: number } = {};
 
-  const newCards = findHighestCombo(cards);
-
-  for (const card of newCards) {
+  for (const card of cards) {
     if (occurrences[card]) {
       occurrences[card]! += 1;
     } else {
@@ -106,12 +132,20 @@ function assignHandValue({ cards }: Hand) {
     }
   }
 
-  const uniqueCards = new Set(newCards);
+  const uniqueCards = new Set(cards);
   const uniqueCount = uniqueCards.size;
 
   const sortedOccurrences = Object.values(occurrences).sort(
     (a, b) => (b || 0) - (a || 0)
   );
+
+  return { occurrences, uniqueCount, sortedOccurrences };
+};
+
+function assignHandValue({ cards }: Hand) {
+  const newCards = findHighestCombo(cards);
+
+  const { uniqueCount, sortedOccurrences } = getOccurences(newCards);
 
   if (sortedOccurrences[0] === 5) {
     return returnHandValueResult('Five of a kind', newCards);
@@ -132,22 +166,15 @@ function assignHandValue({ cards }: Hand) {
 
 function compareCards(a: CardLabel[], b: CardLabel[]): number {
   for (let i = 0; i < Math.min(a.length, b.length); i++) {
-    // console.log('comparing', a, b);
-
     const valueA = cardValues[a[i]];
     const valueB = cardValues[b[i]];
 
-    /* console.log('card value a', a[i], valueA);
-    console.log('card value b', b[i], valueB); */
-
     if (valueA !== valueB) {
-      // console.log('returning because of matching');
       return valueA - valueB;
     }
   }
 
-  // console.log('no match');
-  return b.length - a.length; // If all labels are equal, shorter array wins
+  return b.length - a.length;
 }
 
 const hands = input.map((hand) => {
@@ -166,26 +193,10 @@ hands.sort((a, b) => {
   }
 });
 
-// console.log(hands);
-
 let sum = 0;
 
-hands.forEach(({ cards, bid, rank }, i) => {
-  console.log(
-    i + 1,
-    cards.join(''),
-    rank.withWildCards.join(''),
-    rank.rankString,
-    bid
-  );
+hands.forEach(({ bid }, i) => {
   sum += bid * (i + 1);
 });
-
-console.log('\n');
-if (sum === 5905) {
-  console.log('correct!!!');
-} else {
-  console.log('wrong!!!');
-}
 
 console.log(sum);
