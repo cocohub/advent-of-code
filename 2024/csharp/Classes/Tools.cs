@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 class Tools
 {
     public static string ReadFile(String filePath, String fileName)
@@ -16,5 +18,10 @@ class Tools
         {
             throw new Exception($"Failed to read contents of file: {ex.Message}");
         }
+    }
+
+    public static string[] SplitByWhitespace(String text)
+    {
+        return Regex.Split(text.Trim(), @"\s+");
     }
 }
