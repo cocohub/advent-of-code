@@ -1,4 +1,5 @@
 ﻿// DayOne.PartOne();
 // DayOne.PartTwo();
 
-DayTwo.PartOne();
+// DayTwo.PartOne();
+DayTwo.PartTwo();
