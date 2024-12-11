@@ -1,4 +1,4 @@
-﻿class DayTwo
+﻿class Day2
 {
     const string DAY = "TWO";
 
@@ -32,7 +32,7 @@
     {
         try
         {
-            string input = Tools.ReadFile("DayTwo", "input.txt");
+            string input = Tools.ReadFile("2", "input.txt");
             int total = 0;
 
             foreach (var line in input.Split('\n'))
@@ -57,7 +57,7 @@
     {
         try
         {
-            string input = Tools.ReadFile("DayTwo", "input.txt");
+            string input = Tools.ReadFile("Day2", "input.txt");
             int total = 0;
 
             foreach (var line in input.Split('\n'))

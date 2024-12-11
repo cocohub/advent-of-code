@@ -1,11 +1,11 @@
 ﻿
 using System.Text.RegularExpressions;
 
-class DayOne
+class Day1
 {
     public static List<int>[] CreateLists()
     {
-        string fileContent = Tools.ReadFile("DayOne", "input.txt");
+        string fileContent = Tools.ReadFile("1", "input.txt");
 
         List<int>[] lists = [[], []];
 
