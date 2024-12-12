@@ -5,4 +5,7 @@
 // Day2.PartTwo();
 
 // Day3.PartOne();
-Day3.PartTwo();
+// Day3.PartTwo();
+
+Day4.PartOne();
+// Day3.PartTwo();
