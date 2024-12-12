@@ -21,18 +21,6 @@
 
         int total = 0;
 
-        // Initialize the 2D array
-        char[,] array = new char[rows, cols];
-
-        // Populate the 2D array
-        for (int y = 0; y < rows; y++)
-        {
-            for (int x = 0; x < cols; x++)
-            {
-                array[y, x] = lines[y][x];
-            }
-        }
-
         // Check words horizontally
         for (int y = 0; y < rows; y++)
         {
@@ -40,7 +28,7 @@
             {
                 if (x + targetLength <= cols)
                 {
-                    string word = $"{array[y, x]}{array[y, x + 1]}{array[y, x + 2]}{array[y, x + 3]}";
+                    string word = $"{lines[y][x]}{lines[y][x + 1]}{lines[y][x + 2]}{lines[y][x + 3]}";
 
                     if (IsMatch(word))
                     {
@@ -58,7 +46,7 @@
 
                 if (y + targetLength <= rows)
                 {
-                    string word = $"{array[y, x]}{array[y + 1, x]}{array[y + 2, x]}{array[y + 3, x]}";
+                    string word = $"{lines[y][x]}{lines[y + 1][x]}{lines[y + 2][x]}{lines[y + 3][x]}";
 
                     if (IsMatch(word))
                     {
@@ -75,7 +63,7 @@
             {
                 if (x + targetLength <= cols && y + targetLength <= rows)
                 {
-                    string word = $"{array[y, x]}{array[y + 1, x + 1]}{array[y + 2, x + 2]}{array[y + 3, x + 3]}";
+                    string word = $"{lines[y][x]}{lines[y + 1][x + 1]}{lines[y + 2][x + 2]}{lines[y + 3][x + 3]}";
 
                     if (IsMatch(word))
                     {
@@ -92,7 +80,7 @@
             {
                 if (x - targetLength >= -1 && y + targetLength <= rows)
                 {
-                    string word = $"{array[y, x]}{array[y + 1, x - 1]}{array[y + 2, x - 2]}{array[y + 3, x - 3]}";
+                    string word = $"{lines[y][x]}{lines[y + 1][x - 1]}{lines[y + 2][x - 2]}{lines[y + 3][x - 3]}";
 
                     if (IsMatch(word))
                     {
