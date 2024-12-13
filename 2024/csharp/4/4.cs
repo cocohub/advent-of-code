@@ -21,11 +21,11 @@
 
         int total = 0;
 
-        // Check words horizontally
         for (int y = 0; y < rows; y++)
         {
             for (int x = 0; x < cols; x++)
             {
+                // Check words horizontally
                 if (x + targetLength <= cols)
                 {
                     string word = $"{lines[y][x]}{lines[y][x + 1]}{lines[y][x + 2]}{lines[y][x + 3]}";
@@ -35,15 +35,8 @@
                         total++;
                     }
                 }
-            }
-        }
 
-        // Check words vertically
-        for (int x = 0; x < cols; x++)
-        {
-            for (int y = 0; y < rows; y++)
-            {
-
+                // Check words vertically
                 if (y + targetLength <= rows)
                 {
                     string word = $"{lines[y][x]}{lines[y + 1][x]}{lines[y + 2][x]}{lines[y + 3][x]}";
@@ -53,14 +46,8 @@
                         total++;
                     }
                 }
-            }
-        }
 
-        // Check words diagonally, left to right
-        for (int y = 0; y < rows; y++)
-        {
-            for (int x = 0; x < cols; x++)
-            {
+                // Check words diagonally, left to right
                 if (x + targetLength <= cols && y + targetLength <= rows)
                 {
                     string word = $"{lines[y][x]}{lines[y + 1][x + 1]}{lines[y + 2][x + 2]}{lines[y + 3][x + 3]}";
@@ -70,14 +57,8 @@
                         total++;
                     }
                 }
-            }
-        }
 
-        // Check words diagonally, right to left
-        for (int y = 0; y < rows; y++)
-        {
-            for (int x = cols - 1; x >= 0; x--)
-            {
+                // Check words diagonally, right to left
                 if (x - targetLength >= -1 && y + targetLength <= rows)
                 {
                     string word = $"{lines[y][x]}{lines[y + 1][x - 1]}{lines[y + 2][x - 2]}{lines[y + 3][x - 3]}";
