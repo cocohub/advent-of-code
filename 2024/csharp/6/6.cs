@@ -1,13 +1,8 @@
-﻿class Map
+﻿class Map(string[] rows)
 {
-    public string[] Rows { get; set; }
+    public string[] Rows { get; set; } = rows;
     public int RowsCount => Rows.Length;
     public int ColsCount => Rows[0].Length;
-
-    public Map(string[] rows)
-    {
-        Rows = rows;
-    }
 
     public (int x, int y) GetGuardStartingPosition()
     {
@@ -46,38 +41,36 @@ public enum Direction
     Right = 'R'
 }
 
-class Guard
+class Guard(int x, int y)
 {
-    public Direction Direction { get; set; }
-    public int X { get; set; }
-    public int Y { get; set; }
-
-    public Guard(int _x, int _y)
-    {
-        Direction = Direction.Up;
-        X = _x;
-        Y = _y;
-    }
+    public Direction Direction { get; set; } = Direction.Up;
+    public int X { get; set; } = x;
+    public int Y { get; set; } = y;
+    public int Moves { get; set; }
+    public int Rotations { get; set; }
+    public Dictionary<string, (int x, int y)> Visited { get; set; } = [];
 
     public (int x, int y) NextCoordinates()
     {
-        switch (Direction)
+        return Direction switch
         {
-            case Direction.Up:
-                return (X, Y - 1);
-            case Direction.Down:
-                return (X, Y + 1);
-            case Direction.Left:
-                return (X - 1, Y);
-            case Direction.Right:
-                return (X + 1, Y);
-            default:
-                return (-1, -1);
-        }
+            Direction.Up => (X, Y - 1),
+            Direction.Down => (X, Y + 1),
+            Direction.Left => (X - 1, Y),
+            Direction.Right => (X + 1, Y),
+            _ => (-1, -1),
+        };
     }
 
     public bool Move(char? nextElement)
     {
+        string key = $"x{X}y{Y}";
+
+        if (!Visited.ContainsKey(key))
+        {
+            Visited[key] = (X, Y);
+        }
+
         if (nextElement == '.')
         {
             switch (Direction)
@@ -97,6 +90,7 @@ class Guard
                 default:
                     break;
             }
+            Moves++;
             return true;
         }
         else if (nextElement == '#')
@@ -118,6 +112,7 @@ class Guard
                 default:
                     break;
             }
+            Rotations++;
             return true;
         }
         else
@@ -125,6 +120,20 @@ class Guard
             return false;
         }
 
+    }
+
+    public void Patrol(Map map)
+    {
+        while (true)
+        {
+            (int nextX, int nextY) = NextCoordinates();
+            char? nextElement = map.GetElement(nextX, nextY);
+
+            if (!Move(nextElement))
+            {
+                break;
+            }
+        }
     }
 }
 
@@ -137,35 +146,13 @@ class Day6
         string input = Tools.ReadFile("6", "input.txt");
         string[] lines = input.Split("\n");
 
-        Map map = new Map(lines);
+        Map map = new(lines);
         (int guardStartX, int guardStartY) = map.GetGuardStartingPosition();
 
-        Guard guard = new Guard(guardStartX, guardStartY);
+        Guard guard = new(guardStartX, guardStartY);
+        guard.Patrol(map);
 
-        int total = 0;
-
-        Dictionary<string, bool> visited = new Dictionary<string, bool>();
-
-        while (true)
-        {
-            string key = $"x{guard.X}y{guard.Y}";
-
-            if (!visited.ContainsKey(key))
-            {
-                total++;
-                visited[key] = true;
-            }
-
-            (int nextX, int nextY) = guard.NextCoordinates();
-            char? nextElement = map.GetElement(nextX, nextY);
-
-            if (!guard.Move(nextElement))
-            {
-                break;
-            }
-        }
-
-        Console.WriteLine($"The answer to Day {DAY}, part ONE is: {total}");
+        Console.WriteLine($"The answer to Day {DAY}, part ONE is: {guard.Visited.Count}");
     }
 
     public static void PartTwo()
@@ -173,8 +160,6 @@ class Day6
         string input = Tools.ReadFile("6", "input.txt");
         string[] lines = input.Split("\n");
 
-        int total = 0;
-
-        Console.WriteLine($"The answer to Day {DAY}, part TWO is: {total}");
+        Console.WriteLine($"The answer to Day {DAY}, part TWO is: ...");
     }
 }
