@@ -31,6 +31,13 @@
             return null;
         }
     }
+
+    public void PlaceObstacle(int x, int y)
+    {
+        char[] line = Rows[y].ToCharArray();
+        line[x] = '#';
+        Rows[y] = new string(line);
+    }
 }
 
 public enum Direction
@@ -49,6 +56,9 @@ class Guard(int x, int y)
     public int Moves { get; set; }
     public int Rotations { get; set; }
     public Dictionary<string, (int x, int y)> Visited { get; set; } = [];
+    public Dictionary<string, (int x, int y, Direction d)> VisitedWithDirection { get; set; } = [];
+    public bool GotStuck { get; set; } = false;
+    public bool HasLeft { get; set; } = false;
 
     public (int x, int y) NextCoordinates()
     {
@@ -69,6 +79,13 @@ class Guard(int x, int y)
         if (!Visited.ContainsKey(key))
         {
             Visited[key] = (X, Y);
+        }
+
+        string keyWithDirection = $"x{X}y{Y}d{Direction}";
+
+        if (!VisitedWithDirection.ContainsKey(keyWithDirection))
+        {
+            VisitedWithDirection[keyWithDirection] = (X, Y, Direction);
         }
 
         if (nextElement == '.')
@@ -131,6 +148,14 @@ class Guard(int x, int y)
 
             if (!Move(nextElement))
             {
+                System.Console.WriteLine($"Guard left at {X}, {Y}");
+                HasLeft = true;
+                break;
+            }
+
+            if (VisitedWithDirection.ContainsKey($"x{X}y{Y}d{Direction}"))
+            {
+                GotStuck = true;
                 break;
             }
         }
@@ -160,6 +185,33 @@ class Day6
         string input = Tools.ReadFile("6", "input.txt");
         string[] lines = input.Split("\n");
 
-        Console.WriteLine($"The answer to Day {DAY}, part TWO is: ...");
+        Map map = new(lines);
+        (int guardStartX, int guardStartY) = map.GetGuardStartingPosition();
+
+        Guard guard = new(guardStartX, guardStartY);
+        guard.Patrol(map);
+
+        int total = 0;
+
+        foreach (var visit in guard.Visited)
+        {
+            (int x, int y) = visit.Value;
+
+            if ((x, y) != (guardStartX, guardStartY) && map.GetElement(x, y) == '.')
+            {
+                Map tmpMap = new((string[])lines.Clone());
+                tmpMap.PlaceObstacle(x, y);
+
+                Guard tmpGuard = new(guardStartX, guardStartY);
+                tmpGuard.Patrol(tmpMap);
+
+                if (tmpGuard.GotStuck)
+                {
+                    total++;
+                }
+            };
+        }
+
+        Console.WriteLine($"The answer to Day {DAY}, part TWO is: {total}");
     }
 }
