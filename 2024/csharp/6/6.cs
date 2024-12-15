@@ -148,7 +148,6 @@ class Guard(int x, int y)
 
             if (!Move(nextElement))
             {
-                System.Console.WriteLine($"Guard left at {X}, {Y}");
                 HasLeft = true;
                 break;
             }
