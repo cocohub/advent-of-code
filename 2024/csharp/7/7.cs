@@ -63,9 +63,67 @@ class Day7
     public static void PartTwo()
     {
         string input = Tools.ReadFile("7", "input.txt");
-        string[] lines = input.Split("\n\n");
+        string[] lines = input.Split("\n");
 
-        int total = 0;
+        long total = 0;
+
+        char[] operators = ['+', '*', '|'];
+
+        foreach (var line in lines)
+        {
+            string pattern = @"\d+";
+            MatchCollection matches = Regex.Matches(line, pattern);
+
+            long expected = long.Parse(matches[0].Value);
+
+            long[] numbers = matches.Skip(1).Select(m => long.Parse(m.Value)).ToArray();
+
+            int operations = numbers.Length - 1;
+            int possibilities = (int)Math.Pow(operators.Length, operations);
+
+            List<char[]> operationVariations = [];
+
+            for (int i = 0; i < possibilities; i++)
+            {
+                char[] chars = [];
+                int temp = i;
+
+                for (int j = 0; j < operations; j++)
+                {
+                    chars[j] = operators[temp % operators.Length];
+                    temp /= operators.Length;
+                }
+
+                operationVariations.Add(chars);
+            }
+
+            foreach (var variation in operationVariations)
+            {
+                long result = numbers[0];
+
+                for (int i = 0; i < variation.Length; i++)
+                {
+                    if (variation[i] == '+')
+                    {
+                        result += numbers[i + 1];
+                    }
+                    else if (variation[i] == '*')
+                    {
+                        result *= numbers[i + 1];
+                    }
+                    else
+                    {
+                        result = long.Parse($"{result}{numbers[i + 1]}");
+                    }
+                }
+
+                if (result == expected)
+                {
+                    total += result;
+                    break;
+                }
+            }
+        }
 
         Console.WriteLine($"The answer to Day {DAY}, part TWO is: {total}");
     }
