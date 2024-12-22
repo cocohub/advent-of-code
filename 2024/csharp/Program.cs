@@ -17,4 +17,7 @@
 // Day6.PartTwo();
 
 // Day7.PartOne();
-Day7.PartTwo();
+// Day7.PartTwo();
+
+Day8.PartOne();
+// Day8.PartTwo();
